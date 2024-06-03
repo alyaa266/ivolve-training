@@ -1,3 +1,0 @@
-[webservers]
-
-192.168.187.131  ansible_user=yousry  ansible_become_pass=yousry

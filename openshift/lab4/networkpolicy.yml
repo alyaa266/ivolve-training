@@ -1,0 +1,13 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-nginx-traffic
+  namespace: default  # Change this if your NGINX deployment is in a different namespace
+spec:
+  podSelector:
+    matchLabels:
+      app: custom-nginx  # This should match the label of your NGINX pods
+  ingress:
+  - from:
+    - podSelector: {}
+

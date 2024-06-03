@@ -1,0 +1,47 @@
+---
+- name: Install and configure Apache web server on Red Hat-based systems
+  hosts: webservers
+  become: yes
+  vars_prompt:
+    - name: "ansible_become_password"
+      prompt: "Enter sudo password"
+      private: yes
+  tasks:
+    - name: Ensure EPEL repository is enabled
+      yum:
+        name: epel-release
+        state: present
+
+    - name: Update the package index
+      yum:
+        name: "*"
+        state: latest
+      register: update_result
+
+    - name: Install Apache
+      yum:
+        name: httpd
+        state: present
+
+    - name: Start and enable Apache service
+      systemd:
+        name: httpd
+        enabled: yes
+        state: started
+
+    - name: Create a simple HTML file
+      copy:
+        content: |
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <title>Welcome to Apache</title>
+          </head>
+          <body>
+              <h1>Success! The Apache web server is working!</h1>
+          </body>
+          </html>
+        dest: /var/www/html/index.html
+        owner: apache
+        group: apache
+        mode: '0644'

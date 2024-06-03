@@ -1,0 +1,42 @@
+---
+- name: Install and configure MySQL
+  hosts: webservers
+  become: yes
+  vars_files:
+    - vars/credentials.yml  # File containing MySQL credentials
+  tasks:
+    - name: Install MySQL server
+      yum:
+        name: mysql-server
+        state: present
+
+    - name: Start MySQL service
+      systemd:
+        name: mysqld
+        state: started
+        enabled: yes
+
+    - name: Set MySQL root password
+      mysql_user:
+        name: root
+        password: "{{ mysql_root_password }}"
+        host: localhost
+        check_implicit_admin: yes
+        login_user: root
+        login_password: ''
+
+    - name: Create database named 'ivolvedb'
+      mysql_db:
+        name: ivolvedb
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+
+    - name: Create MySQL user 'alyaa' with password from Ansible Vault
+      mysql_user:
+        name: alyaa
+        password: "{{ mysql_alyaa_password }}"
+        priv: 'ivolvedb.*:ALL'
+        host: localhost
+        login_user: root
+        login_password: "{{ mysql_root_password }}"

@@ -1,0 +1,5 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: my-html-app
+  namespace: alyaabadr
